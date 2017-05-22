@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -166,16 +166,151 @@ exports.default = BarChart;
 "use strict";
 
 
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var CircleBase = function () {
+    function CircleBase(data, domElement) {
+        _classCallCheck(this, CircleBase);
+
+        this.data = data;
+        this.domElement = domElement;
+    }
+
+    _createClass(CircleBase, [{
+        key: "$onInit",
+        value: function $onInit() {}
+    }, {
+        key: "drawCircle",
+        value: function drawCircle() {
+            this.svgContainer = d3.select("." + this.domElement).append("svg").attr("width", 500).attr("height", 500);
+            var self = this;
+            var circles = self.svgContainer.selectAll('circle').data(self.data).enter().append("circle");
+            var circleAttributes = circles.attr("cx", function (d) {
+                return d.x_axis;
+            }).attr("cy", function (d) {
+                return d.y_axis;
+            }).attr("r", function (d) {
+                return d.radius;
+            }).style("fill", function (d) {
+                return d.color;
+            });
+        }
+    }]);
+
+    return CircleBase;
+}();
+
+exports.default = CircleBase;
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var CoordinateAxis = function () {
+    function CoordinateAxis() {
+        _classCallCheck(this, CoordinateAxis);
+
+        this.height = 0;
+        this.width = 0;
+        this.margin = {};
+        this.svg = null;
+    }
+
+    _createClass(CoordinateAxis, [{
+        key: "selectElement",
+        value: function selectElement(size, domElement) {
+            var self = this;
+            this.margin = { top: 20, right: 20, bottom: 60, left: 40 };
+            this.width = size.width - this.margin.left - this.margin.right;
+            this.height = size.height - this.margin.top - this.margin.bottom;
+
+            this.svg = d3.select("." + domElement).append("svg").attr("width", self.width + self.margin.left + self.margin.right).attr("height", self.height + self.margin.top + self.margin.bottom).append("g").attr("transform", "translate(" + self.margin.left + "," + self.margin.top + ")");
+        }
+    }, {
+        key: "drawXAxis",
+        value: function drawXAxis() {
+            var self = this;
+            var x = d3.scaleLinear().range([0, self.width]);
+            var xAxis = d3.axisBottom(x).ticks(10);
+            self.svg.append("g").attr("class", "x axis").attr("transform", "translate(0," + self.height + ")").call(xAxis).append("text").attr("y", 6).attr("dy", ".71em").style("text-anchor", "end").text("mm (mm2)");
+        }
+    }, {
+        key: "drawYAxis",
+        value: function drawYAxis() {
+            var self = this;
+            var y = d3.scaleLinear().range([self.height, 0]);
+            var yAxis = d3.axisLeft(y).ticks(10);
+            self.svg.append("g").attr("class", "y axis").call(yAxis).append("text").attr("transform", "rotate(-90)").attr("y", 6).attr("dy", ".71em").style("text-anchor", "end").text("mm (mm2)");
+        }
+    }]);
+
+    return CoordinateAxis;
+}();
+
+exports.default = CoordinateAxis;
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
 var _barChart = __webpack_require__(0);
 
 var _barChart2 = _interopRequireDefault(_barChart);
 
+var _circleBase = __webpack_require__(1);
+
+var _circleBase2 = _interopRequireDefault(_circleBase);
+
+var _coordinateAxis = __webpack_require__(2);
+
+var _coordinateAxis2 = _interopRequireDefault(_coordinateAxis);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var data = [{ "date": "2013-01", "value": 90 }, { "date": "2013-02", "value": 130 }, { "date": "2013-03", "value": 250 }, { "date": "2013-04", "value": 255 }, { "date": "2013-05", "value": 325 }, { "date": "2013-06", "value": 600 }, { "date": "2013-07", "value": 219 }, { "date": "2013-08", "value": 259 }, { "date": "2013-09", "value": 300 }, { "date": "2013-10", "value": 470 }, { "date": "2013-11", "value": 1350 }, { "date": "2013-12", "value": 200 }];
-var barChart = new _barChart2.default(data, 'chart');
 
-barChart.draw();
+var jsonCircles = [{
+    "x_axis": 30,
+    "y_axis": 30,
+    "radius": 20,
+    "color": "green"
+}, {
+    "x_axis": 70,
+    "y_axis": 70,
+    "radius": 20,
+    "color": "purple"
+}, {
+    "x_axis": 110,
+    "y_axis": 100,
+    "radius": 20,
+    "color": "red"
+}];
+
+var coordinateAxis = new _coordinateAxis2.default();
+
+coordinateAxis.selectElement({ width: 500, height: 600 }, 'chart');
+coordinateAxis.drawXAxis();
+coordinateAxis.drawYAxis();
 
 /***/ })
 /******/ ]);

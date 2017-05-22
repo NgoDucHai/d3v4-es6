@@ -11,11 +11,8 @@
         $oninit(){
 
 
-         }
+        }
 
-         axisX(){
-
-         }
         draw(){
             let self = this;
             let data = this.data;
