@@ -175,11 +175,11 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var CircleBase = function () {
-    function CircleBase(data, domElement) {
+    function CircleBase(svg, data) {
         _classCallCheck(this, CircleBase);
 
+        this.svg = svg;
         this.data = data;
-        this.domElement = domElement;
     }
 
     _createClass(CircleBase, [{
@@ -188,10 +188,10 @@ var CircleBase = function () {
     }, {
         key: "drawCircle",
         value: function drawCircle() {
-            this.svgContainer = d3.select("." + this.domElement).append("svg").attr("width", 500).attr("height", 500);
             var self = this;
-            var circles = self.svgContainer.selectAll('circle').data(self.data).enter().append("circle");
-            var circleAttributes = circles.attr("cx", function (d) {
+            var circles = self.svg.selectAll('circle').data(self.data);
+
+            circles.enter().append("circle").attr("cx", function (d) {
                 return d.x_axis;
             }).attr("cy", function (d) {
                 return d.y_axis;
@@ -242,6 +242,7 @@ var CoordinateAxis = function () {
             this.height = size.height - this.margin.top - this.margin.bottom;
 
             this.svg = d3.select("." + domElement).append("svg").attr("width", self.width + self.margin.left + self.margin.right).attr("height", self.height + self.margin.top + self.margin.bottom).append("g").attr("transform", "translate(" + self.margin.left + "," + self.margin.top + ")");
+            return this.svg;
         }
     }, {
         key: "drawXAxis",
@@ -308,9 +309,17 @@ var jsonCircles = [{
 
 var coordinateAxis = new _coordinateAxis2.default();
 
-coordinateAxis.selectElement({ width: 500, height: 600 }, 'chart');
+var svg = coordinateAxis.selectElement({ width: 500, height: 600 }, 'chart');
 coordinateAxis.drawXAxis();
 coordinateAxis.drawYAxis();
+
+var circleGreen = new _circleBase2.default(svg, [{
+    "x_axis": 100,
+    "y_axis": 230,
+    "radius": 60,
+    "color": "green"
+}]);
+circleGreen.drawCircle();
 
 /***/ })
 /******/ ]);

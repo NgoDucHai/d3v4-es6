@@ -19,6 +19,7 @@ export default class CoordinateAxis{
             .append("g")
             .attr("transform",
                 "translate(" + self.margin.left + "," + self.margin.top + ")");
+        return this.svg;
     }
 
     drawXAxis(){

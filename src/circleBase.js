@@ -1,8 +1,8 @@
 "use strict";
 export default class CircleBase {
-    constructor(data, domElement) {
+    constructor(svg, data) {
+        this.svg = svg;
         this.data = data;
-        this.domElement = domElement;
     }
 
     $onInit() {
@@ -10,19 +10,15 @@ export default class CircleBase {
     }
 
     drawCircle() {
-        this.svgContainer = d3.select("." + this.domElement)
-            .append("svg")
-            .attr("width", 500)
-            .attr("height", 500);
         let self = this;
-        let circles = self.svgContainer.selectAll('circle')
-            .data(self.data)
-            .enter()
-            .append("circle");
-        let circleAttributes = circles
+        let circles = self.svg.selectAll('circle')
+            .data(self.data);
+
+        circles.enter()
+            .append("circle")
             .attr("cx", d => d.x_axis)
             .attr("cy", d => d.y_axis)
             .attr("r", d => d.radius)
-            .style("fill", d => d.color);
+            .style("fill", d => d.color)
     }
 }

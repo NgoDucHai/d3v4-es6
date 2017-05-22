@@ -38,6 +38,14 @@ let jsonCircles = [
 
 let coordinateAxis = new CoordinateAxis();
 
-coordinateAxis.selectElement({width:500,height:600},'chart');
+let svg = coordinateAxis.selectElement({width:500,height:600},'chart');
 coordinateAxis.drawXAxis();
 coordinateAxis.drawYAxis();
+
+let circleGreen = new CircleBase(svg, [{
+    "x_axis": 100,
+    "y_axis": 230,
+    "radius": 60,
+    "color": "green"
+}]);
+circleGreen.drawCircle();
